@@ -17,11 +17,13 @@ import { environment } from '../../environments/environment';
   templateUrl: './home.page.html',
   standalone: true,
   imports: [
-    // TODO: Add all the Ionic components from the imports above
-    // HINT: Copy each component name from the imports list
-    CommonModule,
-    FormsModule,
-    // YOUR CODE HERE
+    CommonModule, FormsModule,
+    IonHeader, IonToolbar, IonTitle, IonContent,
+    IonGrid, IonRow, IonCol, IonCard, IonCardContent,
+    IonCardHeader, IonCardTitle, IonItem, IonLabel,
+    IonButton, IonIcon, IonProgressBar, IonText,
+    IonRadioGroup, IonRadio, IonImg, IonTextarea,
+    IonRippleEffect
   ]
 })
 export class HomePage {
@@ -46,5 +48,10 @@ export class HomePage {
   selectImage(url: string) {
     // TODO: Set the selectedImage property
     // HINT: this.selectedImage = url;
+  }
+
+  onSubmit() {
+    // Handle form submission logic here
+    console.log('Form submitted');
   }
 }
