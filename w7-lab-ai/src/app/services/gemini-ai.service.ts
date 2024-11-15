@@ -7,29 +7,43 @@ import { environment } from '../../environments/environment';
 })
 export class GeminiAiService {
   private readonly MODEL_NAME = 'gemini-1.5-flash';
-  
+  public output: string = '';
+
   async getImageAsBase64(imageUrl: string): Promise<string> {
-    // TODO: Move image conversion code here
-    // HINT: Copy the code from your component that:
-    // 1. Fetches the image
-    // 2. Converts to blob
-    // 3. Converts to base64
-    // 4. Returns the base64 string
-    return ''; // Temporary return statement to avoid compile error
+    const response = await fetch(imageUrl);
+    const blob = await response.blob();
+    return new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64data = reader.result as string;
+        const base64String = base64data.split(',')[1];
+        resolve(base64String);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
   }
 
   async generateRecipe(imageBase64: string, prompt: string): Promise<string> {
-    try {
-      // TODO: Move AI generation code here
-      // HINT: Copy the code that:
-      // 1. Creates the AI client
-      // 2. Gets the model
-      // 3. Calls generateContent
-      // 4. Returns the response text
-      
-      return 'Generated recipe text';
-    } catch (error) {
-      throw new Error('Failed to generate recipe');
-    }
+    const genAI = new GoogleGenerativeAI(environment.apiKey);
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+
+    const result = await model.generateContent({
+      contents: [{
+        role: 'user',
+        parts: [
+          {
+            inlineData: {
+              mimeType: 'image/jpeg',
+              data: imageBase64
+            }
+          },
+          { text: prompt }
+        ]
+      }]
+    });
+
+    this.output = result.response.text();
+    return this.output;
   }
 }
